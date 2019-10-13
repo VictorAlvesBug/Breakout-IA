@@ -46,6 +46,16 @@ class Matrix {
         //return this;
     }
 
+    mutacao() {
+        let matrix = new Matrix(this.rows, this.cols);
+
+        matrix.map((element, i, j) => {
+            return this.data[i][j] + random()*0.2 - 0.1;
+        });
+
+        return matrix;
+    }
+
     map(func) {
         this.data = this.data.map((arr, i) => {
             return arr.map((num, j) => {
