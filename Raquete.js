@@ -2,13 +2,22 @@ class Raquete {
     constructor(indice) {
         this.indice = indice;
 
-        this.x = width / 2;
-        this.y = height * 0.8;
+        this.x = larguraPlayground / 2;
+        this.y = alturaPlayground * 0.8;
         this.width = 150;
         this.height = 10;
         this.increment = 50;
+        this.visibility = true;
 
         this.setEdges();
+    }
+
+    hide() {
+        this.visibility = false;
+    }
+
+    show() {
+        this.visibility = true;
     }
 
     moveLeft() {
@@ -23,11 +32,11 @@ class Raquete {
     }
     moveRight() {
         //console.warn('CLICANDO PRA DIREITA');
-        if (this.x + this.increment < width - this.width / 2) {
+        if (this.x + this.increment < larguraPlayground - this.width / 2) {
             this.x += this.increment;
         }
         else {
-            this.x = width - this.width / 2;
+            this.x = larguraPlayground - this.width / 2;
         }
         this.setEdges();
     }
@@ -40,10 +49,12 @@ class Raquete {
     }
 
     draw() {
-        noStroke();
-        colorMode(HSB);
-        fill(map(this.indice, 0, qtdeIndividuosPorGeracao, 0, 360), 255, 255);
-        colorMode(RGB);
-        rect(this.left, this.top, this.width, this.height);
+        if (this.visibility && bola[this.indice].vidas > 0) {
+            noStroke();
+            colorMode(HSB);
+            fill(map(this.indice, 0, qtdeIndividuosPorGeracao, 0, 360), 255, 255);
+            colorMode(RGB);
+            rect(this.left, this.top, this.width, this.height);
+        }
     }
 }

@@ -5,6 +5,9 @@ var redeNeural;
 var raquete;
 var bola;
 
+var larguraPlayground = 800;
+var alturaPlayground = 600;
+
 var teclaEsquerda = 0;
 var teclaDireita = 0;
 
@@ -14,7 +17,7 @@ var contadorGeracao = 0;
 var qtdeIndividuosPorGeracao = 30;
 
 function setup() {
-    createCanvas(800, 600);
+    createCanvas(1000, 600);
 
     redeNeural = [];
     raquete = [];
@@ -32,10 +35,24 @@ function draw() {
 
     background(0);
 
+    noFill();
+    stroke(255);
+    line(larguraPlayground, 0, larguraPlayground, height);
+
+    let contPlayersAtivos = 0;
     for (let i = 0; i < qtdeIndividuosPorGeracao; i++) {
         raquete[i].draw();
         bola[i].update();
         bola[i].draw();
+
+        if (bola[i].vidas > 0) {
+
+            bola[i].show();
+            raquete[i].show();
+
+            bola[i].info(contPlayersAtivos);
+            contPlayersAtivos++;
+        }
 
         var bolaX = int(bola[i].x);
         var bolaY = int(bola[i].y);
@@ -71,8 +88,9 @@ function draw() {
 
     if (fimDaGeracao) {
         let novasRedesNeurais = RedeNeural.selecaoNatural(redeNeural, 3);
-        //novasRedesNeurais = RedeNeural.mutacao(novasRedesNeurais, qtdeIndividuosPorGeracao);
-        novasRedesNeurais = RedeNeural.crossOver(novasRedesNeurais, qtdeIndividuosPorGeracao);
+        novasRedesNeurais = RedeNeural.replicarMelhoresRedes(novasRedesNeurais, qtdeIndividuosPorGeracao);
+        novasRedesNeurais = RedeNeural.crossOver(novasRedesNeurais, 3);
+        //novasRedesNeurais = RedeNeural.mutacao(novasRedesNeurais);
 
         redeNeural = novasRedesNeurais;
 
