@@ -98,6 +98,11 @@ class RedeNeural {
         return arrayRedesNeurais.splice(0, quantasDasMelhores);
     }
 
+    static selecaoNatural_Antigo(arrayRedesNeurais, quantasDasMelhores) {
+        arrayRedesNeurais.sort(function (a, b) { return b.score - a.score });
+        return arrayRedesNeurais.splice(0, quantasDasMelhores);
+    }
+
     static replicarMelhoresRedes(arrayRedesNeurais, qtdeDeRedesParaGerar) {
         let qtdeRedesIniciais = arrayRedesNeurais.length;
         while (arrayRedesNeurais.length < qtdeDeRedesParaGerar) {
@@ -137,6 +142,37 @@ class RedeNeural {
             arrayRedesNeurais[indiceRedeBaseB].bias_ho = novasMatrizes[1];
         }
         
+        return arrayRedesNeurais;
+    }
+
+    static crossOver_Antigo(arrayRedesNeurais, qtdeDeRedesParaGerar) {
+        let qtdeRedesIniciais = arrayRedesNeurais.length;
+        while (arrayRedesNeurais.length < qtdeDeRedesParaGerar) {
+            let qtdeInput = arrayRedesNeurais[0].qtdeInput;
+            let qtdeHidden = arrayRedesNeurais[0].qtdeHidden;
+            let qtdeOutput = arrayRedesNeurais[0].qtdeOutput;
+            let novaRedeNeural = new RedeNeural(qtdeInput, qtdeHidden, qtdeOutput);
+
+            novaRedeNeural.bias_ih.map((element, i, j) => {
+                let indiceRedeBase = floor(random() * qtdeRedesIniciais);
+                return arrayRedesNeurais[indiceRedeBase].bias_ih.data[i][j];
+            });
+            novaRedeNeural.bias_ho.map((element, i, j) => {
+                let indiceRedeBase = floor(random() * qtdeRedesIniciais);
+                return arrayRedesNeurais[indiceRedeBase].bias_ho.data[i][j];
+            });
+            novaRedeNeural.weights_ih.map((element, i, j) => {
+                let indiceRedeBase = floor(random() * qtdeRedesIniciais);
+                return arrayRedesNeurais[indiceRedeBase].weights_ih.data[i][j];
+            });
+            novaRedeNeural.weights_ho.map((element, i, j) => {
+                let indiceRedeBase = floor(random() * qtdeRedesIniciais);
+                return arrayRedesNeurais[indiceRedeBase].weights_ho.data[i][j];
+            });
+
+            arrayRedesNeurais.push(novaRedeNeural);
+        }
+
         return arrayRedesNeurais;
     }
 
