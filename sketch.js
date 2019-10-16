@@ -87,9 +87,11 @@ function draw() {
     }
 
     if (fimDaGeracao) {
-        let novasRedesNeurais = RedeNeural.selecaoNatural(redeNeural, 3);
+        /*let novasRedesNeurais = RedeNeural.selecaoNatural(redeNeural, 3);
         novasRedesNeurais = RedeNeural.replicarMelhoresRedes(novasRedesNeurais, qtdeIndividuosPorGeracao);
-        novasRedesNeurais = RedeNeural.crossOver(novasRedesNeurais, 3);
+        novasRedesNeurais = RedeNeural.crossOver(novasRedesNeurais, 3);*/
+        let novasRedesNeurais = RedeNeural.selecaoNatural_Antigo(redeNeural, 3);
+        novasRedesNeurais = RedeNeural.crossOver_Antigo(novasRedesNeurais, qtdeIndividuosPorGeracao);
         //novasRedesNeurais = RedeNeural.mutacao(novasRedesNeurais);
 
         redeNeural = novasRedesNeurais;
@@ -98,12 +100,12 @@ function draw() {
             bola[i] = new Bola(i);
         }
         console.log(`Melhores Scores:`);
-        console.log(`1° - ${novasRedesNeurais[0].score} Pontos`);
-        console.log(`2° - ${novasRedesNeurais[1].score} Pontos`);
-        console.log(`3° - ${novasRedesNeurais[2].score} Pontos`);
+        console.log(`1Â° - ${novasRedesNeurais[0].score} Pontos`);
+        console.log(`2Â° - ${novasRedesNeurais[1].score} Pontos`);
+        console.log(`3Â° - ${novasRedesNeurais[2].score} Pontos`);
 
         contadorGeracao++;
-        console.log(`Estou na ${contadorGeracao}° Geração`);
+        console.log(`Estou na ${contadorGeracao}Â° GeraÃ§Ã£o`);
     }
 
     /*if (train) {
@@ -126,7 +128,7 @@ function draw() {
         }
 
         if (bola.vidas <= 0) {
-            console.log(`Aff, só consegui ${bola.maxScore} pontos :-(`)
+            console.log(`Aff, sÃ³ consegui ${bola.maxScore} pontos :-(`)
             console.log('Vou treinar...');
             for (var i = 0; i < 1000; i++) {
                 var index = floor(random(dataset.length));
@@ -138,7 +140,7 @@ function draw() {
                 redeNeural.train(entrada, saida);
             }
             contadorGeracao++;
-            console.log(`Agora, na ${contadorGeracao}º geração, vou conseguir ;-)`);
+            console.log(`Agora, na ${contadorGeracao}Âº geraÃ§Ã£o, vou conseguir ;-)`);
             bola = new Bola();
         }
     }*/
