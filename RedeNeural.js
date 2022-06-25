@@ -25,6 +25,8 @@ class RedeNeural {
         this.weights_ho.randomize();
 
         this.learning_rate = 0.1;
+
+        this.score = 0;
     }
 
     train(arrInput, arrTarget) {
@@ -89,5 +91,106 @@ class RedeNeural {
         output.map(sigmoid);
 
         return Matrix.MatrixToArray(output);
+    }
+
+    static selecaoNatural(arrayRedesNeurais, quantasDasMelhores) {
+        arrayRedesNeurais.sort(function (a, b) { return b.score - a.score });
+        return arrayRedesNeurais.splice(0, quantasDasMelhores);
+    }
+
+    static selecaoNatural_Antigo(arrayRedesNeurais, quantasDasMelhores) {
+        arrayRedesNeurais.sort(function (a, b) { return b.score - a.score });
+        return arrayRedesNeurais.splice(0, quantasDasMelhores);
+    }
+
+    static replicarMelhoresRedes(arrayRedesNeurais, qtdeDeRedesParaGerar) {
+        let qtdeRedesIniciais = arrayRedesNeurais.length;
+        while (arrayRedesNeurais.length < qtdeDeRedesParaGerar) {
+            let indiceRedeBase = floor(random() * qtdeRedesIniciais);
+            arrayRedesNeurais.push(arrayRedesNeurais[indiceRedeBase]);
+        }
+
+        return arrayRedesNeurais;
+    }
+
+    static crossOver(arrayRedesNeurais, qtdeRedesBase) {
+        for (let i = qtdeRedesBase; i < arrayRedesNeurais.length; i++) {
+            let indiceRedeBaseA, indiceRedeBaseB, novasMatrizes;
+
+            indiceRedeBaseA = i;
+            indiceRedeBaseB = i + 1 + floor(random() * arrayRedesNeurais.length - (i + 1));
+            novasMatrizes = Matrix.crossOver(arrayRedesNeurais[indiceRedeBaseA].weights_ih, arrayRedesNeurais[indiceRedeBaseB].weights_ih);
+            arrayRedesNeurais[indiceRedeBaseA].weights_ih = novasMatrizes[0];
+            arrayRedesNeurais[indiceRedeBaseB].weights_ih = novasMatrizes[1];
+
+            indiceRedeBaseA = i;
+            indiceRedeBaseB = i + 1 + floor(random() * arrayRedesNeurais.length - (i + 1));
+            novasMatrizes = Matrix.crossOver(arrayRedesNeurais[indiceRedeBaseA].weights_ho, arrayRedesNeurais[indiceRedeBaseB].weights_ho);
+            arrayRedesNeurais[indiceRedeBaseA].weights_ho = novasMatrizes[0];
+            arrayRedesNeurais[indiceRedeBaseB].weights_ho = novasMatrizes[1];
+
+            indiceRedeBaseA = i;
+            indiceRedeBaseB = i + 1 + floor(random() * arrayRedesNeurais.length - (i + 1));
+            novasMatrizes = Matrix.crossOver(arrayRedesNeurais[indiceRedeBaseA].bias_ih, arrayRedesNeurais[indiceRedeBaseB].bias_ih);
+            arrayRedesNeurais[indiceRedeBaseA].bias_ih = novasMatrizes[0];
+            arrayRedesNeurais[indiceRedeBaseB].bias_ih = novasMatrizes[1];
+
+            indiceRedeBaseA = i;
+            indiceRedeBaseB = i + 1 + floor(random() * arrayRedesNeurais.length - (i + 1));
+            novasMatrizes = Matrix.crossOver(arrayRedesNeurais[indiceRedeBaseA].bias_ho, arrayRedesNeurais[indiceRedeBaseB].bias_ho);
+            arrayRedesNeurais[indiceRedeBaseA].bias_ho = novasMatrizes[0];
+            arrayRedesNeurais[indiceRedeBaseB].bias_ho = novasMatrizes[1];
+        }
+        
+        return arrayRedesNeurais;
+    }
+
+    static crossOver_Antigo(arrayRedesNeurais, qtdeDeRedesParaGerar) {
+        let qtdeRedesIniciais = arrayRedesNeurais.length;
+        while (arrayRedesNeurais.length < qtdeDeRedesParaGerar) {
+            let qtdeInput = arrayRedesNeurais[0].qtdeInput;
+            let qtdeHidden = arrayRedesNeurais[0].qtdeHidden;
+            let qtdeOutput = arrayRedesNeurais[0].qtdeOutput;
+            let novaRedeNeural = new RedeNeural(qtdeInput, qtdeHidden, qtdeOutput);
+
+            novaRedeNeural.bias_ih.map((element, i, j) => {
+                let indiceRedeBase = floor(random() * qtdeRedesIniciais);
+                return arrayRedesNeurais[indiceRedeBase].bias_ih.data[i][j];
+            });
+            novaRedeNeural.bias_ho.map((element, i, j) => {
+                let indiceRedeBase = floor(random() * qtdeRedesIniciais);
+                return arrayRedesNeurais[indiceRedeBase].bias_ho.data[i][j];
+            });
+            novaRedeNeural.weights_ih.map((element, i, j) => {
+                let indiceRedeBase = floor(random() * qtdeRedesIniciais);
+                return arrayRedesNeurais[indiceRedeBase].weights_ih.data[i][j];
+            });
+            novaRedeNeural.weights_ho.map((element, i, j) => {
+                let indiceRedeBase = floor(random() * qtdeRedesIniciais);
+                return arrayRedesNeurais[indiceRedeBase].weights_ho.data[i][j];
+            });
+
+            arrayRedesNeurais.push(novaRedeNeural);
+        }
+
+        return arrayRedesNeurais;
+    }
+
+    static mutacao(arrayRedesNeurais) {
+        let qtdeRedesIniciais = arrayRedesNeurais.length;
+        while (arrayRedesNeurais.length < qtdeDeRedesParaGerar) {
+            let qtdeInput = arrayRedesNeurais[0].qtdeInput;
+            let qtdeHidden = arrayRedesNeurais[0].qtdeHidden;
+            let qtdeOutput = arrayRedesNeurais[0].qtdeOutput;
+            let novaRedeNeural = new RedeNeural(qtdeInput, qtdeHidden, qtdeOutput);
+            let indiceRedeBase = floor(random() * qtdeRedesIniciais);
+            novaRedeNeural.bias_ih = arrayRedesNeurais[indiceRedeBase].bias_ih.mutacao();
+            novaRedeNeural.bias_ho = arrayRedesNeurais[indiceRedeBase].bias_ho.mutacao();
+            novaRedeNeural.weights_ih = arrayRedesNeurais[indiceRedeBase].weights_ih.mutacao();
+            novaRedeNeural.weights_ho = arrayRedesNeurais[indiceRedeBase].weights_ho.mutacao();
+            arrayRedesNeurais.push(novaRedeNeural);
+        }
+
+        return arrayRedesNeurais;
     }
 }

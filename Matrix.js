@@ -46,6 +46,52 @@ class Matrix {
         //return this;
     }
 
+    static crossOver(A, B) {
+        if (A.rows != B.rows || A.cols != B.cols) {
+            throw new Error('Matrizes não compatíveis para efetuar crossover.');
+            return null;
+        }
+
+        let novaMatrixA = new Matrix(A.rows, A.cols);
+        let novaMatrixB = new Matrix(A.rows, A.cols);
+
+        let qtdeCelulas = A.rows * A.cols;
+        let pontoDeCorte = floor(random() * qtdeCelulas);
+        let contPontosDaMatriz = -1;
+
+        novaMatrixA.map((element, i, j) => {
+            contPontosDaMatriz++;
+            if (contPontosDaMatriz < pontoDeCorte) {
+                return A.data[i][j];
+            }
+            else {
+                return B.data[i][j];
+            }
+        });
+
+        novaMatrixB.map((element, i, j) => {
+            contPontosDaMatriz++;
+            if (contPontosDaMatriz < pontoDeCorte) {
+                return B.data[i][j];
+            }
+            else {
+                return A.data[i][j];
+            }
+        });
+
+        return [novaMatrixA, novaMatrixB];
+    }
+
+    mutacao() {
+        let matrix = new Matrix(this.rows, this.cols);
+
+        matrix.map((element, i, j) => {
+            return this.data[i][j] + random()*0.2 - 0.1;
+        });
+
+        return matrix;
+    }
+
     map(func) {
         this.data = this.data.map((arr, i) => {
             return arr.map((num, j) => {
